@@ -1,0 +1,28 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+  db:
+    env_file: .env
+    image: postgres
+    restart: always
+    build:
+      context: .
+      dockerfile: db/DockerFile
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - './db:/var/lib/postgresql/db'
+    ports:
+      - ${DB_PORT}:5432
+
+  redis:
+    env_file: .env
+    restart: always
+    image: redis:alpine
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+    ports:
+      - '${REDIS_PORT}:6379'
